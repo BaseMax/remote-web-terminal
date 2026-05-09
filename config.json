@@ -1,0 +1,10 @@
+{
+  "listen_addr": ":8080",
+  "username": "admin",
+  "password_hash": "$2a$12$CHANGE_THIS_TO_A_REAL_BCRYPT_HASH",
+  "shell": "/bin/bash",
+  "shell_args": [],
+  "session_secret": "CHANGE_THIS_TO_A_RANDOM_32_CHAR_SECRET",
+  "max_sessions": 10,
+  "idle_timeout_seconds": 300
+}

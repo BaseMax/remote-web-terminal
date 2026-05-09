@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Remote Terminal</title>
+
+  <!-- xterm.js from CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xterm-addon-web-links@0.9.0/lib/xterm-addon-web-links.min.js"></script>
+
+  <link rel="stylesheet" href="/static/terminal.css" />
+</head>
+<body>
+  <div id="topbar">
+    <div id="topbar-left">
+      <svg class="topbar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="2" y="3" width="20" height="14" rx="2"/>
+        <polyline points="8 21 12 17 16 21"/>
+        <line x1="12" y1="17" x2="12" y2="21"/>
+      </svg>
+      <span id="topbar-title">Remote Terminal</span>
+    </div>
+    <div id="topbar-right">
+      <span id="conn-status" class="status-dot connected" title="Connected"></span>
+      <button id="new-tab-btn" class="topbar-btn" title="New terminal tab">＋ New Tab</button>
+      <button id="logout-btn" class="topbar-btn danger" title="Sign out">Sign Out</button>
+    </div>
+  </div>
+
+  <div id="tab-bar">
+    <!-- tabs inserted here dynamically -->
+  </div>
+
+  <div id="terminal-container">
+    <!-- xterm instances mounted here -->
+  </div>
+
+  <div id="overlay" class="hidden">
+    <div id="overlay-msg"></div>
+  </div>
+
+  <script src="/static/terminal.js"></script>
+</body>
+</html>

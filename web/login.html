@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login — Remote Terminal</title>
+  <link rel="stylesheet" href="/static/login.css" />
+</head>
+<body>
+  <div class="login-wrap">
+    <div class="login-box">
+      <div class="login-logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="3" width="20" height="14" rx="2"/>
+          <polyline points="8 21 12 17 16 21"/>
+          <line x1="12" y1="17" x2="12" y2="21"/>
+        </svg>
+        <span>Remote Terminal</span>
+      </div>
+      <h1>Sign In</h1>
+      <p class="subtitle">Enter your credentials to access the terminal</p>
+
+      <form id="login-form" novalidate>
+        <div class="field">
+          <label for="username">Username</label>
+          <input id="username" type="text" name="username"
+                 autocomplete="username" autofocus
+                 placeholder="username" required />
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <div class="pw-wrap">
+            <input id="password" type="password" name="password"
+                   autocomplete="current-password"
+                   placeholder="••••••••" required />
+            <button type="button" class="toggle-pw" aria-label="toggle password visibility">
+              <svg id="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div id="error-msg" class="error-msg" role="alert" aria-live="polite"></div>
+
+        <button type="submit" class="btn-login" id="submit-btn">
+          <span id="btn-text">Sign In</span>
+          <span id="btn-spinner" class="spinner hidden"></span>
+        </button>
+      </form>
+    </div>
+  </div>
+  <script src="/static/login.js"></script>
+</body>
+</html>
