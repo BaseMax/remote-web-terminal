@@ -1,10 +1,10 @@
 {
   "listen_addr": ":8080",
-  "username": "admin",
-  "password_hash": "$2a$12$CHANGE_THIS_TO_A_REAL_BCRYPT_HASH",
-  "shell": "/bin/bash",
+  "username": "shahin",
+  "password_hash": "$2a$12$lQrfJX3WKjyJ4ciYw5s1UuQSOYukAybcYwchFyUtA5iKUg4/Q3Gty",
+  "shell": "",
   "shell_args": [],
-  "session_secret": "CHANGE_THIS_TO_A_RANDOM_32_CHAR_SECRET",
+  "session_secret": "70137712006076790692329188233292",
   "max_sessions": 10,
   "idle_timeout_seconds": 300
 }

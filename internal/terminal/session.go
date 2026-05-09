@@ -4,12 +4,9 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"os"
-	"os/exec"
 	"sync"
 	"time"
 
-	"github.com/creack/pty"
 	"github.com/google/uuid"
 )
 
@@ -20,16 +17,23 @@ const (
 	maxChunkSize = 32 * 1024 // 32 KB
 )
 
+// ptyConn is the platform-agnostic PTY interface.
+// Implementations live in pty_unix.go and pty_windows.go.
+type ptyConn interface {
+	io.ReadWriteCloser
+	resize(cols, rows uint16) error
+	// wait blocks until the child process exits.
+	wait() error
+}
+
 // Session represents a single PTY terminal session.
 type Session struct {
-	ID        string
-	ptmx      *os.File
-	cmd       *os.Cmd
-	mu        sync.Mutex
-	outBuf    []byte
-	closed    bool
-	lastSeen  time.Time
-	done      chan struct{}
+	ID       string
+	ptmx     ptyConn
+	mu       sync.Mutex
+	outBuf   []byte
+	closed   bool
+	lastSeen time.Time
 }
 
 // Manager manages all terminal sessions.
@@ -52,11 +56,7 @@ func (m *Manager) Create(shell string, shellArgs []string, cols, rows uint16, id
 
 	id := uuid.New().String()
 
-	args := append([]string{}, shellArgs...)
-	cmd := exec.Command(shell, args...)
-	cmd.Env = buildEnv(cols, rows)
-
-	ptmx, err := pty.StartWithSize(cmd, &pty.Winsize{Cols: cols, Rows: rows})
+	ptmx, err := startPTY(shell, shellArgs, cols, rows)
 	if err != nil {
 		return nil, fmt.Errorf("pty start: %w", err)
 	}
@@ -64,19 +64,17 @@ func (m *Manager) Create(shell string, shellArgs []string, cols, rows uint16, id
 	sess := &Session{
 		ID:       id,
 		ptmx:     ptmx,
-		cmd:      cmd,
 		outBuf:   make([]byte, 0, 4096),
 		lastSeen: time.Now(),
-		done:     make(chan struct{}),
 	}
 
 	m.sessions[id] = sess
 
 	// Goroutine: read PTY output into ring buffer
 	go sess.readLoop()
-	// Goroutine: wait for process exit and clean up
+	// Goroutine: wait for process exit and mark closed
 	go func() {
-		_ = cmd.Wait()
+		_ = ptmx.wait()
 		sess.mu.Lock()
 		sess.closed = true
 		sess.mu.Unlock()
@@ -195,7 +193,7 @@ func (s *Session) Write(data []byte) error {
 
 // Resize changes the PTY window size.
 func (s *Session) Resize(cols, rows uint16) error {
-	return pty.Setsize(s.ptmx, &pty.Winsize{Cols: cols, Rows: rows})
+	return s.ptmx.resize(cols, rows)
 }
 
 func (s *Session) destroy() {
@@ -203,21 +201,4 @@ func (s *Session) destroy() {
 	s.closed = true
 	s.mu.Unlock()
 	_ = s.ptmx.Close()
-	if s.cmd.Process != nil {
-		_ = s.cmd.Process.Kill()
-	}
-}
-
-func buildEnv(cols, rows uint16) []string {
-	return []string{
-		"TERM=xterm-256color",
-		"COLORTERM=truecolor",
-		fmt.Sprintf("COLUMNS=%d", cols),
-		fmt.Sprintf("LINES=%d", rows),
-		"HOME=" + os.Getenv("HOME"),
-		"USER=" + os.Getenv("USER"),
-		"PATH=" + os.Getenv("PATH"),
-		"LANG=" + os.Getenv("LANG"),
-		"SHELL=" + os.Getenv("SHELL"),
-	}
 }

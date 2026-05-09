@@ -2,7 +2,8 @@
 // A small utility to generate bcrypt password hashes for config.json
 //
 // Usage:
-//   go run ./cmd/genhash -password yourpassword
+//
+//	go run ./cmd/genhash -password yourpassword
 //
 // Copy the output into config.json as "password_hash".
 package main
