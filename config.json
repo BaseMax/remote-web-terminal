@@ -1,6 +1,6 @@
 {
-  "listen_addr": ":8080",
-  "username": "shahin",
+  "listen_addr": ":9998",
+  "username": "admin",
   "password_hash": "$2a$12$lQrfJX3WKjyJ4ciYw5s1UuQSOYukAybcYwchFyUtA5iKUg4/Q3Gty",
   "shell": "",
   "shell_args": [],
